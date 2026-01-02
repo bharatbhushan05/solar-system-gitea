@@ -4,8 +4,7 @@ pipeline{
         nodejs 'nodejs-22-6-0'
     }
 
-    stages 
-    {
+    stages {
         stage("Checking node version"){
             steps{
                 sh '''
@@ -14,10 +13,10 @@ pipeline{
                 '''
             }
         }
-        stage{
-            steps("Currect working dir"){
-                sh ' pwd '
-                sh ' npm install --no-audit '
+        stage("Currect working dir"){
+            steps{
+                sh 'pwd'
+                sh 'npm install --no-audit'
             }
         }
          
