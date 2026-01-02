@@ -15,7 +15,7 @@ pipeline{
         }
         stage("Currect working dir"){
             steps{
-                sh 'pwd'
+                sh 'pwd && ls -lrt'
                 sh 'npm install --no-audit'
             }
         }
