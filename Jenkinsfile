@@ -15,7 +15,7 @@ pipeline{
             }
         }
         
-            steps("Currect working dir"{
+            steps("Currect working dir"){
                 sh ' pwd '
                 sh ' npm install --no-audit '
             }
