@@ -1,6 +1,6 @@
 pipeline{
     agent any
-    tool{
+    tools{
         nodejs 'nodejs-22-6-0'
     }
 
