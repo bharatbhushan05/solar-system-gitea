@@ -14,12 +14,12 @@ pipeline{
                 '''
             }
         }
-        stage{
-            steps{
+        
+            steps("Currect working dir"{
                 sh ' pwd '
                 sh ' npm install --no-audit '
             }
-        }
+        
          
     }
 
