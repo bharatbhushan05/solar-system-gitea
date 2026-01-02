@@ -6,12 +6,18 @@ pipeline{
 
     stages 
     {
-        stage("Installing nodejs on agent"){
+        stage("Checking node version"){
             steps{
                 sh '''
                 node -v
                 npm -v
                 '''
+            }
+        }
+        stage{
+            steps{
+                sh ' pwd '
+                sh ' npm install --no-audit '
             }
         }
          
