@@ -1,16 +1,14 @@
 pipeline{
     agent any
-    // tools{
-    //     nodejs "node"
-    // }
+    tool{
+        nodejs 'nodejs-22-6-0'
+    }
 
     stages 
     {
         stage("Installing nodejs on agent"){
             steps{
                 sh '''
-                sudo apt update
-                sudo apt install nodejs npm -y
                 node -v
                 npm -v
                 '''
