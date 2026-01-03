@@ -2,7 +2,6 @@ pipeline{
     agent { label 'linux' }
     tools{
         nodejs 'nodejs-22-6-0'
-        git 'git-ubuntu'
   }
     triggers {
         githubPush()
