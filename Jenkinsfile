@@ -1,32 +1,33 @@
-pipeline {
+
+pipeline{
     agent { label 'linux' }
+    tools{
+        nodejs 'nodejs-22-6-0'
+  }
 
-    options {
-        skipDefaultCheckout()
-    }
 
-    stages {
-
-        stage('Checkout') {
-            steps {
-                git branch: 'feature/enabling-cicd',
-                    url: 'https://github.com/bharatbhushan05/solar-system-gitea.git'
-            }
-        }
-
-        stage('Verify Environment') {
-            steps {
+         stage("Checking node version"){
+            steps{
                 sh '''
-                  echo "Node:"
-                  hostname
-                  echo "User:"
-                  whoami
-                  echo "Git:"
-                  which git
-                  git --version
+                    node -v
+                    npm -v
                 '''
             }
         }
-
+        stage('Dependency Scanning'){
+            parallel {
+                stage("OWASP Dependency Check"){
+                    steps{
+                            dependencyCheck additionalArguments: '''
+                                --scan \'./\'
+                                --out \'./\'
+                                --format \'ALL\'
+                                --prettyPrint''', odcInstallation: 'OWASP-DepCheck-10'
+                        }}
+                stage("NPM Dependency Audit"){
+                steps {sh 'npm audit --audit-level=critical'}
+                 }
+         
+                }}
     }
 }
