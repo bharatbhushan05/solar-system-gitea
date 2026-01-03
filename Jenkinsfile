@@ -1,9 +1,7 @@
 
 pipeline{
     agent { label 'linux' }
-    tools{
-        nodejs 'nodejs-22-6-0'
-  }
+    tools{ nodejs 'nodejs-22-6-0'}
 
 
          stage("Checking node version"){
@@ -30,4 +28,3 @@ pipeline{
          
                 }}
     }
-}
