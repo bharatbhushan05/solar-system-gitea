@@ -20,10 +20,13 @@ pipeline{
 
         stage('Dependency Scanning'){
             parallel {
-                stage("Currect working dir"){
+                stage("OWASP Dependency Check"){
                     steps{
-                            sh 'pwd && ls -lrt'
-                            sh 'npm install --no-audit'}
+                            dependencyCheck additionalArguments: '''
+                                --scan \'./\'
+                                --out \'./\'
+                                --format \'ALL\'
+                                --prettyPrint''', odcInstallation: 'OWASP-DepCheck-10'
                         }
 
                 stage("NPM Dependency Audit"){
