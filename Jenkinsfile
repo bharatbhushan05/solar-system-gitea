@@ -22,10 +22,10 @@ pipeline{
             parallel {
                 stage("Currect working dir"){
                     steps{
-                        sh 'pwd && ls -lrt'
-                        sh 'npm install --no-audit'
+                            sh 'pwd && ls -lrt'
+                            sh 'npm install --no-audit'}
                         }
-                        }
+
                 stage("NPM Dependency Audit"){
                 steps {sh 'npm audit --audit-level=critical'}
                  }
