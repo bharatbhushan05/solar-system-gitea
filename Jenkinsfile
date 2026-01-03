@@ -21,13 +21,11 @@ pipeline {
 
                 stage("OWASP Dependency Check") {
                     steps {
-                        dependencyCheck additionalArguments: '''
+                            dependencyCheck additionalArguments: '''
                             --scan ./
                             --out ./
                             --format ALL
-                            --prettyPrint
-                        ''',
-                        odcInstallation: 'OWASP-DepCheck-10'
+                            --prettyPrint''', nvdCredentialsId: 'nvd-api-key', odcInstallation: 'OWASP-DepCheck-10'
                     }
                 }
 
