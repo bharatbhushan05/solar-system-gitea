@@ -1,0 +1,4 @@
+Yet Another Build Visualizer | Version1.17
+Blue Ocean | Version1.27.25
+NodeJS Plugin | Version1.6.6
+OWASP Dependency-Check Plugin | Version5.6.2
