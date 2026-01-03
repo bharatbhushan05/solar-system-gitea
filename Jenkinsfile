@@ -21,17 +21,21 @@ pipeline {
 
                 stage("OWASP Dependency Check") {
                     steps {
-                            dependencyCheck(
-                                            odcInstallation: 'OWASP-DepCheck-10',
-                                            nvdCredentialsId: 'nvd-api-key',
-                                            additionalArguments: '''
-                                                --scan ./
-                                                --out dependency-check-report
-                                                --format HTML
-                                                --prettyPrint
-                                            '''
-)
+                        dependencyCheck(
+                            odcInstallation: 'OWASP-DepCheck-10',
+                            nvdCredentialsId: 'nvd-api-key',
+                            additionalArguments: '''
+                                --scan ./
+                                --out dependency-check-report
+                                --format ALL
+                                --prettyPrint
+                            '''
+                        )
 
+                        // 🔑 THIS IS WHAT MAKES REPORTS VISIBLE IN JENKINS
+                        dependencyCheckPublisher(
+                            pattern: 'dependency-check-report/dependency-check-report.xml'
+                        )
                     }
                 }
 
