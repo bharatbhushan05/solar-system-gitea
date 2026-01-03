@@ -19,7 +19,7 @@ pipeline{
         }
 
         stage('Dependency Scanning'){
-            paraller {
+            parallel {
                 stage("Currect working dir"){
                     steps{
                         sh 'pwd && ls -lrt'
