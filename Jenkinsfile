@@ -9,26 +9,28 @@ pipeline{
     stages {
 
 
-        stage("Checking node version"){
+         stage("Checking node version"){
             steps{
                 sh '''
-                node -v
-                npm -v
+                    node -v
+                    npm -v
                 '''
             }
         }
-        stage("Currect working dir"){
-            steps{
-                sh 'pwd && ls -lrt'
-                sh 'npm install --no-audit'
-            }
-        }
-        stage("NPM Dependency Audit"){
-            steps{
-                sh 'npm audit --audit-level=critical'
-            }
-        }
+
+        stage('Dependency Scanning'){
+            paraller {
+                stage("Currect working dir"){
+                    steps{
+                        sh 'pwd && ls -lrt'
+                        sh 'npm install --no-audit'
+                        }
+                        }
+                stage("NPM Dependency Audit"){
+                steps {sh 'npm audit --audit-level=critical'}
+                 }
          
+                }}
     }
 
 }
