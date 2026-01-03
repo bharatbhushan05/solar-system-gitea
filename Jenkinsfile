@@ -8,7 +8,11 @@ pipeline{
     }
     stages {
 
-
+        stage("Checkout") {
+            steps {
+                checkout scm
+            }
+        }
          stage("Checking node version"){
             steps{
                 sh '''
