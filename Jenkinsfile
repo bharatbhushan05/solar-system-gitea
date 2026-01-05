@@ -35,7 +35,7 @@ pipeline {
                                 script: 'npm audit --audit-level=critical',
                                 returnStatus: true
                             )
-                            sh 'npm audit fix'
+                            sh 'npm audit fix --force'
                             if (auditStatus != 0) {
                                 error("Critical vulnerabilities detected even after fix")
                             }
