@@ -30,12 +30,7 @@ pipeline {
                             """
                         )
 
-                        dependencyCheckPublisher(
-                            pattern: 'dependency-check-report/dependency-check-report.xml'
-                        )
 
-                        // Debug proof
-                        sh 'ls -R $WORKSPACE/dependency-check-report'
                     }
                 }
 
