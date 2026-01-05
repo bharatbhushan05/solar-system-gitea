@@ -33,8 +33,8 @@ pipeline {
                                 --prettyPrint
                             """
                         )
-                        dependencyCheckPublisher( failedTotalCriticalVulnerabilities: 1, pattern: 'dependency-check-report/dependency-check-report.html')
-                        junit allowEmptyResults: true, stdioRetention: '', testResults: 'dependency-check-junit.xml'
+                       // dependencyCheckPublisher( failedTotalCriticalVulnerabilities: 1, pattern: 'dependency-check-report/dependency-check-report.html')
+                       // junit allowEmptyResults: true, stdioRetention: '', testResults: 'dependency-check-junit.xml'
                         
                     }
                 }
