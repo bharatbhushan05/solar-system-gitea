@@ -6,19 +6,15 @@ pipeline {
     }
 
     stages {
-
-        stage("Checking node version") {
+        // check troubleshooting -> Troubleshooting 1. 
+        stage('Checkout on Linux Agent') {
             steps {
-                sh '''
-                    node -v
-                    npm -v
-                '''
+                git branch: 'feature/enabling-cicd',
+                    url: 'https://github.com/bharatbhushan05/solar-system-gitea.git'
             }
         }
-
         stage('Dependency Scanning') {
             parallel {
-
                 stage("OWASP Dependency Check") {
                     steps {
                         sh 'mkdir -p $WORKSPACE/dependency-check-report'
@@ -43,9 +39,10 @@ pipeline {
                     }
                 }
 
-                stage("NPM Dependency Audit") {
+                stage("NPM Dependency Audit and fixing it") {
                     steps {
                         sh 'npm audit --audit-level=critical'
+                        sh 'npm audit fix'
                     }
                 }
 

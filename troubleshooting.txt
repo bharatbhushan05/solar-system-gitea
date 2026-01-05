@@ -1,0 +1,202 @@
+---
+# Troubleshooting 1. 🔴 WHAT IS ACTUALLY GOING WRONG (NO CONFUSION NOW)
+
+You are in this setup:
+
+* ✅ Jenkins **controller** → **Windows (local machine)**
+* ✅ Jenkins **agent** → **Ubuntu EC2**
+* ✅ Job type → **Multibranch Pipeline**
+* ❌ SCM checkout → **still happening on Windows controller**
+
+And the **smoking gun** is this line:
+
+```
+> C:\Program Files\Git\bin\git.exe init /home/jenkins/workspace/solar-application
+```
+
+This means:
+
+👉 Jenkins is trying to run **Windows git.exe**
+👉 Inside a **Linux filesystem path**
+👉 Which is **impossible**
+
+So the failure is **expected**.
+
+---
+
+# 🧠 WHY THIS HAPPENS (IMPORTANT CONCEPT)
+
+### In **Multibranch Pipeline**:
+
+1. Jenkins **MUST checkout the repo first**
+2. To **read the Jenkinsfile**
+3. This initial checkout is called **“Declarative: Checkout SCM”**
+4. ⚠️ **This ALWAYS runs on the controller**
+5. The agent is allocated **after Jenkinsfile is loaded**
+
+So even if your Jenkinsfile says:
+
+```groovy
+agent { label 'linux' }
+```
+
+👉 The **first Git clone already happened on Windows**
+
+That’s why fixing the agent does **not** fix this error.
+
+---
+
+# ❌ WHY YOUR CURRENT GIT CONFIG DOES NOT HELP
+
+You configured:
+
+```
+C:\Program Files\Git\bin\git.exe
+```
+
+That is **correct for Windows**, but Jenkins is trying to use it like this:
+
+```
+git.exe init /home/jenkins/workspace/...
+```
+
+Windows Git **cannot operate on Linux paths**.
+
+So this will **never work**, no matter how correct the Git path is.
+
+---
+
+# ✅ THERE ARE ONLY **2 VALID SOLUTIONS**
+
+There is **no third option** in Jenkins.
+
+---
+
+## 🟢 SOLUTION 1 (RECOMMENDED, INDUSTRY STANDARD)
+
+### 👉 **Move Jenkins controller to Linux**
+
+If:
+
+* Controller = Linux
+* Agent = Linux
+
+Then:
+
+* SCM checkout works
+* Git paths match
+* Multibranch pipelines work perfectly
+* This entire class of problems disappears
+
+✅ This is how **production Jenkins is run**
+
+---
+
+## 🟡 SOLUTION 2 (WORKS ON WINDOWS, BUT LIMITED)
+
+### 👉 **Disable automatic SCM checkout and do it manually on the agent**
+
+This is what you must do if controller stays on Windows.
+
+### 🔧 Jenkinsfile (MANDATORY CHANGES)
+
+```groovy
+pipeline {
+    agent { label 'linux' }
+
+    options {
+        skipDefaultCheckout()
+    }
+
+    stages {
+
+        stage('Checkout on Linux Agent') {
+            steps {
+                git branch: 'feature/enabling-cicd',
+                    url: 'https://github.com/bharatbhushan05/solar-system-gitea.git'
+            }
+        }
+
+        stage('Verify') {
+            steps {
+                sh '''
+                    pwd
+                    which git
+                    git --version
+                '''
+            }
+        }
+    }
+}
+```
+
+### ⚠️ BUT READ THIS CAREFULLY
+
+This works **ONLY IF**:
+
+* Job type is **Pipeline**
+* ❌ NOT Multibranch Pipeline
+
+Because **Multibranch Pipeline cannot skip the first checkout**
+(Jenkins still needs Jenkinsfile)
+
+---
+
+## 🔴 IMPORTANT LIMITATION (THIS IS YOUR CASE)
+
+You are using:
+
+> **Multibranch Pipeline**
+
+👉 That means:
+
+* Jenkinsfile **must be fetched by controller**
+* Git **must run on controller**
+* Controller OS **must be compatible with workspace paths**
+
+👉 **Windows controller + Linux agent + Multibranch = pain**
+
+This is a **documented Jenkins limitation**, not a bug.
+
+---
+
+# 🧩 WHAT KODEKLOUD DOES (WHY THEIR LAB WORKS)
+
+KodeKloud usually uses:
+
+* Linux Jenkins controller
+* Linux agents
+* Or Pipeline job (not multibranch)
+
+So they **never hit this edge case**.
+
+You did — because you went deeper 👍
+
+---
+
+# 🏆 FINAL, HONEST VERDICT
+
+| Option                            | Works? | Recommendation     |
+| --------------------------------- | ------ | ------------------ |
+| Linux controller + Linux agent    | ✅ 100% | ⭐ BEST             |
+| Windows controller + Pipeline job | ✅      | OK                 |
+| Windows controller + Multibranch  | ❌      | NOT SUPPORTED WELL |
+
+---
+
+# 🎯 WHAT I RECOMMEND YOU DO NOW
+
+Since you’re learning **real DevOps**, do this:
+
+### ✅ Spin up a small **Linux EC2** and install Jenkins controller there
+
+(or run Jenkins in Docker on Linux)
+
+This will:
+
+* Instantly fix SCM issues
+* Make Multibranch pipelines smooth
+* Match real-world production setups
+* Save you hours of fighting Windows paths
+
+---
