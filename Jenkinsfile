@@ -4,6 +4,13 @@ pipeline {
         nodejs 'nodejs-22-6-0'
     }
     stages {
+
+        stage('Verify Node and NPM Version') {
+            steps {
+                sh 'node --version'
+                sh 'npm --version'
+            }
+        }
         // check troubleshooting -> Troubleshooting 1. 
         // stage('Checkout on Linux Agent') {
         //     steps {
@@ -26,6 +33,9 @@ pipeline {
                                 --prettyPrint
                             """
                         )
+                        dependencyCheckPublisher( failedTotalCriticalVulnerabilities: 1, pattern: 'dependency-check-report/dependency-check-report.html')
+                        junit allowEmptyResults: true, stdioRetention: '', testResults: 'dependency-check-junit.xml'
+                        
                     }
                 }
                 stage("NPM Dependency Audit and fixing it") {
@@ -42,6 +52,21 @@ pipeline {
                         }
                     }
                 }
+            }
+        }
+        stage('Unit Testing') {
+            options {retry(2) }
+            steps {
+                withcredentials([usernamePassword(credentialsId: 'mongo-db-credentials', usernameVariable: 'NPM_USERNAME', passwordVariable: 'NPM_PASSWORD')]) {
+                    sh 'npm install'
+                    sh 'npm test'
+                }
+            }
+        }
+        stage('Verify Node and NPM Version') {
+            steps {
+                sh 'node --version'
+                sh 'npm --version'
             }
         }
     }
