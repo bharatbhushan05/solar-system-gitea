@@ -63,11 +63,12 @@ pipeline {
                 }
             }
         }
-        stage('Verify Node and NPM Version') {
+        stage('Verify Node and NPM Version1') {
             steps {
                 sh 'node --version'
                 sh 'npm --version'
             }
         }
     }
+
 }
