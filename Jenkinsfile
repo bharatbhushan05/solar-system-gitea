@@ -1,8 +1,8 @@
 pipeline {
     agent any             // { label 'linux' }
-    tools {
-        nodejs 'nodejs-22-6-0'
-    }
+    tools { nodejs 'nodejs-22-6-0' }
+    environment {MONGO_URI = "mongodb+srv://cluster1.5esnosv.mongodb.net/?appName=Cluster1"}
+
     stages {
 
         stage('Verify Node and NPM Version') {
@@ -72,3 +72,4 @@ pipeline {
     }
 
 }
+
