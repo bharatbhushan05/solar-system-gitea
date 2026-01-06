@@ -25,7 +25,7 @@ pipeline {
                         sh 'mkdir -p $WORKSPACE/dependency-check-report'
                         dependencyCheck(
                             odcInstallation: 'OWASP-DepCheck-10',
-                            nvdCredentialsId: 'nvd-api-key',
+                
                             additionalArguments: """
                                 --scan $WORKSPACE
                                 --out $WORKSPACE/dependency-check-report
@@ -72,4 +72,5 @@ pipeline {
     }
 
 }
+
 
