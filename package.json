@@ -30,9 +30,6 @@
     "chai": "*",
     "chai-http": "*",
     "mocha": "*"
-  },
-
-  "overrides": {
-    "mongodb": "anything"
   }
+
 }
