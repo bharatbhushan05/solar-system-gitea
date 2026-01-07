@@ -32,6 +32,6 @@
   },
 
   "overrides": {
-    "mongodb": "^7.5.0"
+    "mongodb": "anything"
   }
 }
